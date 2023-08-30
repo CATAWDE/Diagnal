@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TopShows</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="search">Search</string>
+    <string name="search_condition">Please enter 3 or more characters..</string>
+    <string name="search_hint">Search here</string>
+</resources>
