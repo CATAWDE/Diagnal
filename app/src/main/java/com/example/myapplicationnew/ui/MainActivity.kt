@@ -17,7 +17,6 @@ import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplicationnew.R
@@ -106,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                     val currentItems = mGridLayoutManager.childCount
                     val totalItems = mGridLayoutManager.itemCount
                     val scrolledOutItems = mGridLayoutManager.findFirstVisibleItemPosition()
-                    /* On Scroll as curret page ends, fetch data of next page */
+                    /* On Scroll as current page ends, fetch data of next page */
                     if ((currentItems + scrolledOutItems == totalItems) && currentPageNo < 4) {
                         fetchData()
                     }
@@ -142,16 +141,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        // Get Menu Items
+
+        /* Get Menu Items */
         val mSearchMenuItem: MenuItem = menu.findItem(R.id.action_search)
-        // Get Search view from Menu Items
+
+        /* Get Search View from Menu Items */
         val searchView = mSearchMenuItem.actionView as SearchView
         searchView.maxWidth = Integer.MAX_VALUE
         searchView.queryHint =
             Html.fromHtml("<font color = #ffffff>" + getString(R.string.search_hint) + "</font>")
 
-        //Get Close button from Search View
-        setSearchClosebtnClick(searchView, mSearchMenuItem)
+        /* Get Search View- Close button */
+        setSearchCloseBtnClick(searchView, mSearchMenuItem)
 
         searchView.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -160,6 +161,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!newText.isNullOrEmpty() && newText.length > 2) {
+                    /* Filter list as per query and pass it to adapter */
                     val filtered: ArrayList<Content> = ArrayList()
                     mainList.filter {
                         (it.name.lowercase().startsWith(newText.lowercase()) || (it.name.lowercase()
@@ -177,7 +179,9 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun setSearchClosebtnClick(searchView: SearchView, mSearchMenuItem: MenuItem) {
+    private fun setSearchCloseBtnClick(searchView: SearchView, mSearchMenuItem: MenuItem) {
+
+        /* Get Search View- Close button's Image as provided */
 
         val closeButtonImage: ImageView =
             searchView.findViewById(androidx.appcompat.R.id.search_close_btn)
@@ -187,7 +191,7 @@ class MainActivity : AppCompatActivity() {
                 R.drawable.search_cancel
             )
         )
-
+        /* Get Search View- Close button's Click  */
         closeButtonImage.setOnClickListener {
             mediaListAdapter?.setData(mainList)
             //Clear query
@@ -206,7 +210,7 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        //On Back pressed, Show exit popup
+        /* On Back Pressed, Show exit popup */
         val builder: AlertDialog.Builder = AlertDialog.Builder(this, R.style.Dialog)
         builder.setTitle(getString(R.string.exit_app))
             .setMessage(getString(R.string.exit_msg))
@@ -223,6 +227,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setTextFontPopUI(alertDialog: AlertDialog) {
+        /* Set exit popup dialog UI */
         val textView = alertDialog.window?.findViewById<View>(android.R.id.message) as TextView
         val yesBtn = alertDialog.window?.findViewById<View>(android.R.id.button1) as Button
         val noBtn = alertDialog.window?.findViewById<View>(android.R.id.button2) as Button
