@@ -1,19 +1,13 @@
 package com.example.myapplicationnew.utils
 
 import android.content.Context
-import android.graphics.Typeface
-import android.widget.ActionMenuView
-import android.widget.TextView
 import com.example.myapplicationnew.domain.entity.GetMainResponse
-import com.example.myapplicationnew.domain.entity.MediaItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okio.buffer
 import okio.source
 import java.io.IOException
-import java.lang.reflect.Type
 import java.nio.charset.Charset
-import android.util.Log
 
 class DataUtils {
     companion object {
@@ -35,7 +29,6 @@ class DataUtils {
             val data= readJsonFromAssets(filePath,context)
             data?.let { string ->
                  response= Gson().fromJson(string, object: TypeToken<GetMainResponse>(){}.type)
-                Log.d("***" ,"" + response?.page?.content_items?.content?.size)
             }
             return response
         }

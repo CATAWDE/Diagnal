@@ -7,7 +7,7 @@ import com.example.myapplicationnew.databinding.ItemMediaBinding
 import com.example.myapplicationnew.domain.entity.Content
 
 
-class MediaListAdapter(private val mediaList: ArrayList<Content>):RecyclerView.Adapter<MediaListAdapter.MediaListViewHolder>() {
+class MediaListAdapter(private var mediaList: ArrayList<Content>):RecyclerView.Adapter<MediaListAdapter.MediaListViewHolder>() {
 
     inner class MediaListViewHolder(private val itemBinding: ItemMediaBinding): RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(item: Content) {
@@ -29,5 +29,10 @@ class MediaListAdapter(private val mediaList: ArrayList<Content>):RecyclerView.A
     }
 
     override fun getItemCount(): Int = mediaList.size
+
+    fun setData(list: ArrayList<Content>) {
+        mediaList=list
+        notifyItemRangeChanged(0,list.size-1)
+    }
 
 }

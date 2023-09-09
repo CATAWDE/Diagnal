@@ -2,8 +2,6 @@ package com.example.myapplicationnew.binder
 
 import android.content.Context
 import android.util.TypedValue
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
@@ -22,16 +20,11 @@ fun setPosterTitle(view: AppCompatTextView,title: String?) {
     }else{
         ""
     }
-    var arr= title?.split(" ")
-    if(arr?.size!! > 2){
-        view.startAnimation(
-            AnimationUtils.loadAnimation(
-                view.context,
-                 R.anim.slide_in_right
-            ) as Animation
-        )
 
-    }
+    var arrSize= title?.split(" ")?.size?:0
+        if(arrSize > 2){
+            view.isSelected = true
+        }
 }
 
 @BindingAdapter("setPosterImage")
@@ -49,6 +42,6 @@ fun setPosterImage(view: AppCompatImageView,imgName: String?) {
 
 fun getImage(context:Context, imgName: String?): Int {
     val imgNameCustom = imgName?.dropLast(4)
-    return context.getResources().getIdentifier(imgNameCustom, "drawable", context.getPackageName())
+    return context.resources.getIdentifier(imgNameCustom, "drawable", context.getPackageName())
 }
 

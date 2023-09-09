@@ -2,7 +2,6 @@ package com.example.myapplicationnew.utils
 
 import android.content.Context
 import android.graphics.Typeface
-import android.widget.ActionMenuView
 import android.widget.TextView
 
 class FontUtils {

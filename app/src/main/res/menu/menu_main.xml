@@ -8,5 +8,5 @@
         android:icon="@drawable/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         android:title="@string/search"
-        app:showAsAction="always|collapseActionView" />
+        app:showAsAction="always|withText" />
 </menu>
