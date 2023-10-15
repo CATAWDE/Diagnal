@@ -1,6 +1,9 @@
 package com.example.myapplicationnew.utils
 
 import android.content.Context
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import com.example.myapplicationnew.domain.entity.GetMainResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -8,6 +11,7 @@ import okio.buffer
 import okio.source
 import java.io.IOException
 import java.nio.charset.Charset
+
 
 class DataUtils {
     companion object {
@@ -45,4 +49,5 @@ class DataUtils {
         }
 
     }
+
 }

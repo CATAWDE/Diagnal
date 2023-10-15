@@ -10,4 +10,6 @@
     <string name="yes_text">Yes</string>
     <string name="exit_app">Exit App</string>
     <string name="exit_msg">Are you sure to exit app..</string>
+    <string name="search_hint_max">Maximum characters limit reached ...</string>
+
 </resources>
