@@ -12,14 +12,17 @@
         android:id="@+id/itemLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/black">
+        android:background="@color/black"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_30">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/mediaImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:layout_height="180dp"
             android:backgroundTint="@color/black"
-            android:paddingEnd="@dimen/dp_15"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             setPosterImage="@{mediaItem.poster_image}"
             android:background="@drawable/placeholder_for_missing_posters"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,9 +33,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
+            style="@style/titilliumLight"
             setPosterTitle="@{mediaItem.name}"
             android:ellipsize="marquee"
             android:singleLine="true"
+            android:layout_marginTop="@dimen/dp_5"
             app:layout_constraintTop_toBottomOf="@+id/mediaImage"
             app:layout_constraintStart_toStartOf="@+id/mediaImage"
             app:layout_constraintEnd_toEndOf="@+id/mediaImage"/>

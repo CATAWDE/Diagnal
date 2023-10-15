@@ -1,16 +1,16 @@
 package com.example.myapplicationnew.ui
 
+
+import android.app.Dialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Html
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
@@ -21,12 +21,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplicationnew.R
 import com.example.myapplicationnew.databinding.ActivityMainBinding
+import com.example.myapplicationnew.databinding.ExitDialogBinding
 import com.example.myapplicationnew.di.MainApplication
 import com.example.myapplicationnew.di.MainViewModelFactory
 import com.example.myapplicationnew.domain.entity.Content
 import com.example.myapplicationnew.ui.adapter.MediaListAdapter
-import com.example.myapplicationnew.utils.AppConstant
-import com.example.myapplicationnew.utils.FontUtils
 import com.example.myapplicationnew.viewmodel.MediaViewModel
 import javax.inject.Inject
 
@@ -34,15 +33,17 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var dialogBinding: ExitDialogBinding
     private var mainList: ArrayList<Content> = ArrayList()
     private var mediaListAdapter: MediaListAdapter? = null
     private var currentPageNo = 1
     private lateinit var mGridLayoutManager: GridLayoutManager
     private lateinit var mediaViewModel: MediaViewModel
 
+    /* Dagger will provide the object to this variable through field injection */
     @Inject
-    lateinit var mainViewModelFactory: MainViewModelFactory // Dagger will provide the object to this variable through field injection
-
+    lateinit var mainViewModelFactory: MainViewModelFactory
+    private var isFirstTimeCall = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -59,26 +60,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpUI() {
         setUpToolBar()
+        /* Api call */
         fetchData()
     }
 
     private fun setUpToolBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
-        binding.customTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, 45f)
-        FontUtils.setTypeface(binding.customTitle, AppConstant.FONT_TYPE_SEMIBOLD)
+        binding.customTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40f)
     }
 
     private fun addObservers() {
-        /* Get Response in Livedata observables */
+        /* Get Api Response in Livedata observables */
         mediaViewModel.mediaResponseLiveData.observe(this) { mainResponse ->
             binding.customTitle.text = mainResponse?.page?.title ?: ""
             mainResponse?.page?.content_items?.content?.let { mainList.addAll(it) }
+            /* 1st initialization */
             if (mediaListAdapter == null) {
                 mediaListAdapter = MediaListAdapter(mainList)
                 binding.mainRecyclervw.adapter = mediaListAdapter
                 mGridLayoutManager = GridLayoutManager(
-                    this,  //number of grid columns
+                    this,
                     3
                 )
                 binding.mainRecyclervw.layoutManager = mGridLayoutManager
@@ -96,19 +98,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clickScrollListeners() {
-
+       /* Scroll listener to check once current page scrolled & reach to end , fetch next page data */
         binding.mainRecyclervw.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) //check for scroll down
-                {
-                    val currentItems = mGridLayoutManager.childCount
-                    val totalItems = mGridLayoutManager.itemCount
-                    val scrolledOutItems = mGridLayoutManager.findFirstVisibleItemPosition()
-                    /* On Scroll as current page ends, fetch data of next page */
-                    if ((currentItems + scrolledOutItems == totalItems) && currentPageNo < 4) {
-                        fetchData()
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (isFirstTimeCall) {
+                        isFirstTimeCall = false
+                        val currentItems = mGridLayoutManager.childCount
+                        val totalItems = mGridLayoutManager.itemCount
+                        val scrolledOutItems = mGridLayoutManager.findFirstVisibleItemPosition()
+                        /* On Scroll as current page ends, fetch data of next page */
+                        if ((currentItems + scrolledOutItems == totalItems) && currentPageNo <= 3) {
+                            fetchData()
+                        }
                     }
+                }
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    isFirstTimeCall = true
                 }
             }
         })
@@ -125,6 +132,7 @@ class MainActivity : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = newConfig.orientation
+        /*  3 columns for portrait and 7 columns for landscape orientations */
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             mGridLayoutManager.spanCount = 3
             notifyInvalidate()
@@ -161,6 +169,14 @@ class MainActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!newText.isNullOrEmpty() && newText.length > 2) {
+                    if (newText.length > 6) {
+                        Toast.makeText(
+                            this@MainActivity,
+                            getString(R.string.search_hint_max),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return false
+                    }
                     /* Filter list as per query and pass it to adapter */
                     val filtered: ArrayList<Content> = ArrayList()
                     mainList.filter {
@@ -168,9 +184,14 @@ class MainActivity : AppCompatActivity() {
                             .contains(newText.lowercase())))
                     }.onEach { it1 -> filtered.add(it1) }
                     mediaListAdapter?.setData(filtered)
-                }else if(newText.isNullOrEmpty()){
+                } else if (newText.isNullOrEmpty()) {
                     mediaListAdapter?.setData(mainList)
-
+                } else if (newText.length < 2) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        getString(R.string.search_hint),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 return false
             }
@@ -210,34 +231,16 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        /* On Back Pressed, Show exit popup */
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this, R.style.Dialog)
-        builder.setTitle(getString(R.string.exit_app))
-            .setMessage(getString(R.string.exit_msg))
-            .setCancelable(false)
-            .setPositiveButton(
-                getString(R.string.yes_text)
-            ) { _, _ -> super@MainActivity.onBackPressed() }
-            .setNegativeButton(
-                getString(R.string.no_text)
-            ) { dialog, _ -> dialog.cancel() }
-        val alertDialog: AlertDialog = builder.create()
-        alertDialog.show()
-        setTextFontPopUI(alertDialog)
+        /* Exit Dialog */
+        val exitDialog = Dialog(this)
+        val dialogBinding: ExitDialogBinding = ExitDialogBinding.inflate(LayoutInflater.from(this))
+        exitDialog.setContentView(dialogBinding.getRoot())
+        exitDialog.setContentView(dialogBinding.root)
+        dialogBinding.ysBtn.setOnClickListener {
+            super@MainActivity.onBackPressed()
+        }
+        dialogBinding.noButton.setOnClickListener { exitDialog.dismiss() }
+        exitDialog.show()
     }
 
-    private fun setTextFontPopUI(alertDialog: AlertDialog) {
-        /* Set exit popup dialog UI */
-        val textView = alertDialog.window?.findViewById<View>(android.R.id.message) as TextView
-        val yesBtn = alertDialog.window?.findViewById<View>(android.R.id.button1) as Button
-        val noBtn = alertDialog.window?.findViewById<View>(android.R.id.button2) as Button
-
-        textView.setTextColor(ContextCompat.getColor(this, R.color.black))
-        yesBtn.setTextColor(ContextCompat.getColor(this, R.color.black))
-        noBtn.setTextColor(ContextCompat.getColor(this, R.color.black))
-
-        FontUtils.setTypeface(textView, AppConstant.FONT_TYPE_SEMIBOLD)
-        FontUtils.setTypeface(yesBtn, AppConstant.FONT_TYPE_SEMIBOLD)
-        FontUtils.setTypeface(noBtn, AppConstant.FONT_TYPE_SEMIBOLD)
-    }
 }

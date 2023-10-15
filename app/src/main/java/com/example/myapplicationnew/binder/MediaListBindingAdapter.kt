@@ -7,21 +7,17 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.example.myapplicationnew.R
-import com.example.myapplicationnew.utils.AppConstant
-import com.example.myapplicationnew.utils.FontUtils
-
 
 @BindingAdapter("setPosterTitle")
 fun setPosterTitle(view: AppCompatTextView,title: String?) {
-    FontUtils.setTypeface(view, AppConstant.FONT_TYPE_LIGHT)
-    view.setTextSize(TypedValue.COMPLEX_UNIT_PX, 36f)
+    view.setTextSize(TypedValue.COMPLEX_UNIT_PX, 32f)
     view.text = if (!title.isNullOrEmpty()) {
         title
     }else{
         ""
     }
 
-    var arrSize= title?.split(" ")?.size?:0
+    val arrSize= title?.split(" ")?.size?:0
         if(arrSize > 2){
             view.isSelected = true
         }
