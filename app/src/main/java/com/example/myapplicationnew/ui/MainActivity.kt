@@ -1,6 +1,7 @@
 package com.example.myapplicationnew.ui
 
 
+import android.app.Dialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Html
@@ -8,12 +9,8 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
@@ -24,11 +21,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplicationnew.R
 import com.example.myapplicationnew.databinding.ActivityMainBinding
+import com.example.myapplicationnew.databinding.ExitDialogBinding
 import com.example.myapplicationnew.di.MainApplication
 import com.example.myapplicationnew.di.MainViewModelFactory
 import com.example.myapplicationnew.domain.entity.Content
 import com.example.myapplicationnew.ui.adapter.MediaListAdapter
-import com.example.myapplicationnew.utils.DataUtils
 import com.example.myapplicationnew.viewmodel.MediaViewModel
 import javax.inject.Inject
 
@@ -36,14 +33,16 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var dialogBinding: ExitDialogBinding
     private var mainList: ArrayList<Content> = ArrayList()
     private var mediaListAdapter: MediaListAdapter? = null
     private var currentPageNo = 1
     private lateinit var mGridLayoutManager: GridLayoutManager
     private lateinit var mediaViewModel: MediaViewModel
 
+    /* Dagger will provide the object to this variable through field injection */
     @Inject
-    lateinit var mainViewModelFactory: MainViewModelFactory // Dagger will provide the object to this variable through field injection
+    lateinit var mainViewModelFactory: MainViewModelFactory
     private var isFirstTimeCall = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpUI() {
         setUpToolBar()
+        /* Api call */
         fetchData()
     }
 
@@ -71,15 +71,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addObservers() {
-        /* Get Response in Livedata observables */
+        /* Get Api Response in Livedata observables */
         mediaViewModel.mediaResponseLiveData.observe(this) { mainResponse ->
             binding.customTitle.text = mainResponse?.page?.title ?: ""
             mainResponse?.page?.content_items?.content?.let { mainList.addAll(it) }
+            /* 1st initialization */
             if (mediaListAdapter == null) {
                 mediaListAdapter = MediaListAdapter(mainList)
                 binding.mainRecyclervw.adapter = mediaListAdapter
                 mGridLayoutManager = GridLayoutManager(
-                    this,  //number of grid columns
+                    this,
                     3
                 )
                 binding.mainRecyclervw.layoutManager = mGridLayoutManager
@@ -97,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clickScrollListeners() {
-
+       /* Scroll listener to check once current page scrolled & reach to end , fetch next page data */
         binding.mainRecyclervw.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -131,6 +132,7 @@ class MainActivity : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = newConfig.orientation
+        /*  3 columns for portrait and 7 columns for landscape orientations */
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             mGridLayoutManager.spanCount = 3
             notifyInvalidate()
@@ -229,25 +231,15 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        /* On Back Pressed, Show exit popup */
-        val factory = LayoutInflater.from(this)
-        val exitDialogView: View = factory.inflate(R.layout.exit_dialog, null)
-        val exitDialog = AlertDialog.Builder(this).create()
-        exitDialog.setView(exitDialogView)
-        exitDialogView.findViewById<View>(R.id.ysBtn)
-            .setOnClickListener(object : View.OnClickListener {
-                override fun onClick(v: View?) {
-                    //your business logic
-                    super@MainActivity.onBackPressed()
-                }
-            })
-        exitDialogView.findViewById<View>(R.id.noButton)
-            .setOnClickListener(object : View.OnClickListener {
-                override fun onClick(v: View?) {
-                    exitDialog.dismiss()
-                }
-            })
-
+        /* Exit Dialog */
+        val exitDialog = Dialog(this)
+        val dialogBinding: ExitDialogBinding = ExitDialogBinding.inflate(LayoutInflater.from(this))
+        exitDialog.setContentView(dialogBinding.getRoot())
+        exitDialog.setContentView(dialogBinding.root)
+        dialogBinding.ysBtn.setOnClickListener {
+            super@MainActivity.onBackPressed()
+        }
+        dialogBinding.noButton.setOnClickListener { exitDialog.dismiss() }
         exitDialog.show()
     }
 
