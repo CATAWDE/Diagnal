@@ -66,8 +66,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpToolBar() {
         setSupportActionBar(binding.toolbar)
-        //supportActionBar?.title = ""
-      //  binding.customTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40f)
+        supportActionBar?.title = ""
     }
 
     private fun addObservers() {
@@ -232,20 +231,11 @@ class MainActivity : AppCompatActivity() {
         exitDialog.setContentView(dialogBinding.root)
         dialogBinding.ysBtn.setOnClickListener {
             super@MainActivity.onBackPressed()
+            exitDialog.dismiss()
         }
         dialogBinding.noButton.setOnClickListener { exitDialog.dismiss() }
         exitDialog.show()
 
-
-        var hashMapForTry = HashMap<String,Int>()
-
-        hashMapForTry.put("Hi",5)
-        hashMapForTry.put("What",7)
-        hashMapForTry.put("How",2)
-        hashMapForTry.put("Go",1)
-        hashMapForTry.put("Ford",9)
-
-        val rsultMap = hashMapForTry.entries.sortedBy{it.value}.associate{it.toPair()}
     }
 
 }
