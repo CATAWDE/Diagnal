@@ -33,6 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
+            android:textSize="20sp"
             style="@style/titilliumLight"
             setPosterTitle="@{mediaItem.name}"
             android:ellipsize="marquee"

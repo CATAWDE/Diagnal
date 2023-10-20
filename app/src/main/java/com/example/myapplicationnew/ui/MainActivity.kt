@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
     private fun setUpToolBar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
-        binding.customTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40f)
     }
 
     private fun addObservers() {
@@ -186,12 +185,6 @@ class MainActivity : AppCompatActivity() {
                     mediaListAdapter?.setData(filtered)
                 } else if (newText.isNullOrEmpty()) {
                     mediaListAdapter?.setData(mainList)
-                } else if (newText.length < 2) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        getString(R.string.search_hint),
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
                 return false
             }
@@ -238,9 +231,12 @@ class MainActivity : AppCompatActivity() {
         exitDialog.setContentView(dialogBinding.root)
         dialogBinding.ysBtn.setOnClickListener {
             super@MainActivity.onBackPressed()
+            exitDialog.dismiss()
         }
         dialogBinding.noButton.setOnClickListener { exitDialog.dismiss() }
         exitDialog.show()
+
     }
 
 }
+
