@@ -66,8 +66,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpToolBar() {
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = ""
-        binding.customTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40f)
+        //supportActionBar?.title = ""
+      //  binding.customTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40f)
     }
 
     private fun addObservers() {
@@ -186,12 +186,6 @@ class MainActivity : AppCompatActivity() {
                     mediaListAdapter?.setData(filtered)
                 } else if (newText.isNullOrEmpty()) {
                     mediaListAdapter?.setData(mainList)
-                } else if (newText.length < 2) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        getString(R.string.search_hint),
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
                 return false
             }
@@ -241,6 +235,18 @@ class MainActivity : AppCompatActivity() {
         }
         dialogBinding.noButton.setOnClickListener { exitDialog.dismiss() }
         exitDialog.show()
+
+
+        var hashMapForTry = HashMap<String,Int>()
+
+        hashMapForTry.put("Hi",5)
+        hashMapForTry.put("What",7)
+        hashMapForTry.put("How",2)
+        hashMapForTry.put("Go",1)
+        hashMapForTry.put("Ford",9)
+
+        val rsultMap = hashMapForTry.entries.sortedBy{it.value}.associate{it.toPair()}
     }
 
 }
+

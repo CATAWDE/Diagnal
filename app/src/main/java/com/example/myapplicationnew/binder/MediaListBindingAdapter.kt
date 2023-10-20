@@ -10,7 +10,6 @@ import com.example.myapplicationnew.R
 
 @BindingAdapter("setPosterTitle")
 fun setPosterTitle(view: AppCompatTextView,title: String?) {
-    view.setTextSize(TypedValue.COMPLEX_UNIT_PX, 32f)
     view.text = if (!title.isNullOrEmpty()) {
         title
     }else{
