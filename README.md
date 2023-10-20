@@ -10,3 +10,4 @@
 6) 3rd page- long title will scroll horizontal also missed image
 will take default placeholder to keep ui consistent 
 7) Tried new page data load without using pagination library
+8) Search - on click submit button, shows filtered result
