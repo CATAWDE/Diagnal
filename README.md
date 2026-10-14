@@ -1,5 +1,6 @@
-# Diagnal
--Chandana Tawde
+# App with Media Listing and JSON files to get data from -Diagnal
+
+## Project Includes
 This is media videos contant listing page
 This listing page contains a page title and a vertically scrolling grid with 3 columns for portrait and 7 columns for landscape orientations.
 The grid is not horizontally scrollable
