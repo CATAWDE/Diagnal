@@ -1,6 +1,12 @@
 # Diagnal
 -Chandana Tawde
+This is media videos contant listing page
+This listing page contains a page title and a vertically scrolling grid with 3 columns for portrait and 7 columns for landscape orientations.
+The grid is not horizontally scrollable
+The listed items should be searchable by clicking the Search icon and entering the search query. 
+The search should show results only if the query contains 3 or more characters. Show necessary hints and messages while in the search mode.
 
+## Specification
 1) App Name: TopShows
    App icon added
 2) Architecture pattern-MVVM 
