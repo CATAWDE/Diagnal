@@ -1,4 +1,4 @@
-# App with Media Listing and JSON files to get data from -Diagnal
+# App with Media Listing and JSON files to get data from 
 
 ## Project Includes
 This is media videos contant listing page
