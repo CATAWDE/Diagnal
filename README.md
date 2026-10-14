@@ -11,3 +11,5 @@
 will take default placeholder to keep ui consistent 
 7) Tried new page data load without using pagination library
 8) Search - on click submit button, shows filtered result
+
+<img width="1600" height="720" alt="Screenshot_20230830-230143_TopShows (2) (2)" src="https://github.com/user-attachments/assets/7bb2d4ef-7f9b-4beb-9951-d73eb6ea6987" />
