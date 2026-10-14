@@ -14,4 +14,6 @@ will take default placeholder to keep ui consistent
 
 <img width="1600" height="720" alt="Screenshot_20230830-230143_TopShows (2) (2)" src="https://github.com/user-attachments/assets/1ab9cd94-6439-4129-956f-1cfe9d5e207a" />
 
+
+
 <img width="720" height="1600" alt="Screenshot_20230830-230135_TopShows (2) (2)" src="https://github.com/user-attachments/assets/5c0203bb-cd12-4a7e-a634-538aaaea2596" />
